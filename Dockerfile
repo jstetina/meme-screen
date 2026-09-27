@@ -20,8 +20,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY sync.py .
-COPY entrypoint.sh /app/entrypoint.sh
+COPY src/sync.py .
+COPY src/entrypoint.sh /app/entrypoint.sh
 
 # Create non-root user
 RUN useradd -m -s /bin/bash meme && \

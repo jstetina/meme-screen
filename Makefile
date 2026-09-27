@@ -20,7 +20,7 @@ build:
 
 deploy: build
 	mkdir -p $(QUADLET_DIR)
-	cp meme-screen.container meme-screen-sync.container $(QUADLET_DIR)/
+	cp quadlet/meme-screen.container quadlet/meme-screen-sync.container $(QUADLET_DIR)/
 	systemctl --user daemon-reload
 	systemctl --user start meme-screen meme-screen-sync
 
@@ -38,3 +38,4 @@ clean:
 	-rm -f $(QUADLET_DIR)/meme-screen.container $(QUADLET_DIR)/meme-screen-sync.container
 	-systemctl --user daemon-reload
 	-podman rmi localhost/meme-screen:latest
+
