@@ -1,0 +1,30 @@
+[Unit]
+Description=Meme Screen Slideshow
+After=network.target
+Requires=meme-screen-xserver.service
+After=meme-screen-xserver.service
+
+[Container]
+Image=localhost/meme-screen_meme-screen:latest
+ContainerName=meme-screen
+User=root
+Environment=DISPLAY=:0
+EnvironmentFiles=%h/meme-screen/config.env
+Volume=/tmp/.X11-unix:/tmp/.X11-unix:rw
+Volume=%h/.Xauthority:/root/.Xauthority:rw
+Volume=%h/meme-screen/credentials.json:/app/credentials.json:ro
+Volume=meme-screen-pictures:/tmp/meme-screen/pictures
+Device=/dev/dri:/dev/dri
+Device=/dev/fb0:/dev/fb0
+SecurityLabelNested=true
+Privileged=true
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+ExecStart=
+ExecStartPost=-/usr/bin/podman logs -f meme-screen
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=X Server for Meme Screen
+After=multi-user.target
+Before=meme-screen.service
+
+[Service]
+Type=simple
+User=kuba
+TTYPath=/dev/tty1
+StandardInput=tty
+StandardOutput=tty
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/kuba/.Xauthority
+ExecStart=/usr/bin/startx /home/kuba/meme-screen/xinitrc -- :0 vt1
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

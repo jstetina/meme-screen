@@ -1,0 +1,20 @@
+[Unit]
+Description=Meme Screen Slideshow Container
+After=network.target
+Requires=meme-screen-xserver.service
+After=meme-screen-xserver.service
+
+[Service]
+Type=simple
+User=kuba
+Environment=DISPLAY=:0
+WorkingDirectory=/home/kuba/meme-screen
+ExecStart=/usr/bin/podman-compose up
+ExecStop=/usr/bin/podman-compose down
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=X Server for Meme Screen
+After=multi-user.target
+Before=meme-screen.service
+
+[Service]
+Type=simple
+User=root
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/X :0 -nolisten tcp
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
