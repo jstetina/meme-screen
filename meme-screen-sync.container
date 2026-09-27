@@ -1,0 +1,21 @@
+[Unit]
+Description=Meme Screen Sync
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=localhost/meme-screen:latest
+ContainerName=meme-screen-sync
+Exec=python /app/sync.py
+EnvironmentFile=%h/meme-screen/config.env
+Volume=%h/meme-screen/credentials.json:/app/credentials.json:ro
+Volume=%h/meme-screen/config.env:/app/.env:ro
+Volume=%h/meme-screen/pictures:/tmp/meme-screen/pictures
+PodmanArgs=--userns=keep-id
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target

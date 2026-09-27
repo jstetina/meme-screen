@@ -20,18 +20,21 @@ build:
 
 deploy: build
 	mkdir -p $(QUADLET_DIR)
-	cp meme-screen.container $(QUADLET_DIR)/
+	cp meme-screen.container meme-screen-sync.container $(QUADLET_DIR)/
 	systemctl --user daemon-reload
-	systemctl --user start meme-screen
+	systemctl --user start meme-screen meme-screen-sync
 
 logs:
 	journalctl --user -fu meme-screen
+
+logs-sync:
+	journalctl --user -fu meme-screen-sync
 
 shell:
 	podman exec -it meme-screen /bin/bash
 
 clean:
-	-systemctl --user stop meme-screen
-	-rm -f $(QUADLET_DIR)/meme-screen.container
+	-systemctl --user stop meme-screen meme-screen-sync
+	-rm -f $(QUADLET_DIR)/meme-screen.container $(QUADLET_DIR)/meme-screen-sync.container
 	-systemctl --user daemon-reload
 	-podman rmi localhost/meme-screen:latest

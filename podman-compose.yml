@@ -4,3 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
     image: localhost/meme-screen:latest
+  meme-screen-sync:
+    image: localhost/meme-screen:latest
+    command: ["python", "/app/sync.py"]

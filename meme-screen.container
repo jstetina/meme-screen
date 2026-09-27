@@ -9,7 +9,6 @@ ContainerName=meme-screen
 Environment=DISPLAY=:0
 EnvironmentFile=%h/meme-screen/config.env
 Volume=/tmp/.X11-unix:/tmp/.X11-unix:rw
-Volume=%h/meme-screen/credentials.json:/app/credentials.json:ro
 Volume=%h/meme-screen/config.env:/app/.env:ro
 Volume=%h/meme-screen/pictures:/tmp/meme-screen/pictures
 AddDevice=/dev/dri

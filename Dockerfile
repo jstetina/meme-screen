@@ -20,7 +20,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY meme_screen.py .
+COPY sync.py .
 COPY entrypoint.sh /app/entrypoint.sh
 
 # Create non-root user
