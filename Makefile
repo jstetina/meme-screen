@@ -1,44 +1,37 @@
-.PHONY: help build up down logs shell test config clean
+.PHONY: help setup build deploy logs shell clean
 
-COMPOSE=podman-compose
+QUADLET_DIR = $(HOME)/.config/containers/systemd
 
 help:
-	@echo "Available targets:"
-	@echo "  make config             - Copy and edit config.env"
-	@echo "  make build              - Build Podman image"
-	@echo "  make up                 - Start container"
-	@echo "  make down               - Stop container"
-	@echo "  make logs               - View container logs"
-	@echo "  make shell              - Open shell in container"
-	@echo "  make test               - Run tests in container"
-	@echo "  make clean              - Clean up containers and images"
+	@echo "  make setup    - One-time host setup (run once after first clone)"
+	@echo "  make build    - Build container image"
+	@echo "  make deploy   - Install Quadlet and start service"
+	@echo "  make logs     - Stream service logs"
+	@echo "  make shell    - Open shell in running container"
+	@echo "  make clean    - Stop and remove service and image"
 
-config:
-	@if [ ! -f config.env ]; then \
-		cp config.env.example config.env; \
-		echo "[DONE] Created config.env - edit it with your settings"; \
-	else \
-		echo "[INFO] config.env already exists"; \
-	fi
+setup:
+	sudo apt-get install -y xserver-xorg-legacy
+	printf 'allowed_users=anybody\nneeds_root_rights=yes\n' | sudo tee /etc/X11/Xwrapper.config
+	loginctl enable-linger $(USER)
 
-build: config
-	$(COMPOSE) build
+build:
+	podman build -t localhost/meme-screen:latest .
 
-up: build
-	./start.sh
-
-down:
-	$(COMPOSE) down
+deploy: build
+	mkdir -p $(QUADLET_DIR)
+	cp meme-screen.container $(QUADLET_DIR)/
+	systemctl --user daemon-reload
+	systemctl --user start meme-screen
 
 logs:
-	$(COMPOSE) logs -f meme-screen
+	journalctl --user -fu meme-screen
 
 shell:
-	$(COMPOSE) exec meme-screen /bin/bash
-
-test: build
-	$(COMPOSE) run --rm meme-screen python -c "from meme_screen import MemeScreen; print('[PASS] Application imports successfully')"
+	podman exec -it meme-screen /bin/bash
 
 clean:
-	$(COMPOSE) down -v
-	podman rmi localhost/meme-screen:latest 2>/dev/null || true
+	-systemctl --user stop meme-screen
+	-rm -f $(QUADLET_DIR)/meme-screen.container
+	-systemctl --user daemon-reload
+	-podman rmi localhost/meme-screen:latest

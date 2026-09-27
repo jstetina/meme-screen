@@ -1,30 +1,25 @@
 [Unit]
-Description=Meme Screen Slideshow
-After=network.target
-Requires=meme-screen-xserver.service
-After=meme-screen-xserver.service
+Description=Meme Screen
+After=network-online.target
+Wants=network-online.target
 
 [Container]
-Image=localhost/meme-screen_meme-screen:latest
+Image=localhost/meme-screen:latest
 ContainerName=meme-screen
-User=root
 Environment=DISPLAY=:0
-EnvironmentFiles=%h/meme-screen/config.env
+EnvironmentFile=%h/meme-screen/config.env
 Volume=/tmp/.X11-unix:/tmp/.X11-unix:rw
-Volume=%h/.Xauthority:/root/.Xauthority:rw
 Volume=%h/meme-screen/credentials.json:/app/credentials.json:ro
-Volume=meme-screen-pictures:/tmp/meme-screen/pictures
-Device=/dev/dri:/dev/dri
-Device=/dev/fb0:/dev/fb0
-SecurityLabelNested=true
-Privileged=true
+Volume=%h/meme-screen/config.env:/app/.env:ro
+Volume=%h/meme-screen/pictures:/tmp/meme-screen/pictures
+AddDevice=/dev/dri
+AddDevice=/dev/fb0
+PodmanArgs=--privileged --userns=keep-id
 
 [Service]
-Type=simple
+ExecStartPre=/bin/bash -c 'pkill -x Xorg 2>/dev/null; sleep 1; /usr/bin/Xorg :0 vt2 -nolisten tcp -ac &>/dev/null & sleep 3'
 Restart=always
-RestartSec=10
-ExecStart=
-ExecStartPost=-/usr/bin/podman logs -f meme-screen
+RestartSec=5
 
 [Install]
 WantedBy=default.target

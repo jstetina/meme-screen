@@ -3,28 +3,4 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: meme-screen
-    user: root
-    env_file:
-      - ./config.env
-    environment:
-      - DISPLAY=:0
-      - GOOGLE_CREDENTIALS_PATH=/app/credentials.json
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ./credentials.json:/app/credentials.json:ro
-      - ./config.env:/app/.env:ro
-      - meme-screen-pictures:/tmp/meme-screen/pictures
-    devices:
-      - /dev/dri:/dev/dri
-      - /dev/fb0:/dev/fb0
-    privileged: true
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-volumes:
-  meme-screen-pictures:
+    image: localhost/meme-screen:latest
